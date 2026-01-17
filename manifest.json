@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "BrightView",
+  "version": "0.1",
+  "permissions": ["tabs", "activeTab", "storage"],
+  "host_permissions": ["https://online.mun.ca/*"],
+"content_scripts": [ 
+  {
+  "matches": ["https://online.mun.ca/d2l/lms/grades/my_grades/*"],
+  "js": ["Analysis.js"]
+  }
+],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
