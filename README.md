@@ -1,9 +1,6 @@
 # BrightView
 A Brightspace/D2L grade viewing and analysis tool. BrightView reads grade data already visible to the user and presents them as clear summaries, averages and GPA insights to help students understand their academic progress.
 
-**Status**: Work in progress.  
-BrightView is currently under active development. Features, behavior, and presentation may change as the project evolves.
-
 ## Author
 BrightView was developed by **Brady Chaulk**, a Computer Engineering student, as a personal project exploring user-facing tools, data interpretation, and responsible software design.
 
