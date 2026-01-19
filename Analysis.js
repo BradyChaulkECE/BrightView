@@ -1,4 +1,5 @@
 /// gets every grade container
+shouldAbort = false;
 let cachedGrade = null;
 let cachedtitle = null;
 ///gets the title
@@ -6,7 +7,7 @@ const uncleantitle = document.getElementsByClassName("d2l-navigation-s-title-con
 cleantitle = uncleantitle.split(" ")[0];
 const GradesEarned = [];
 const GradesTotal = [];
-
+console.log("1");
 ///grade calculator\/\/
 const rows = document.querySelectorAll("tr");
 for (let i = 1; i < rows.length; i++) { 
@@ -29,6 +30,7 @@ for (let i = 1; i < rows.length; i++) {
             const Earned = parseFloat(EarnedString);
             const Total = parseFloat(TotalsString);
             ///Filters empty + 0/0 cells
+            console.log("2");
 
             if (!Number.isFinite(Earned) || !Number.isFinite(Total) || Total == 0) {
                 continue;
@@ -37,8 +39,10 @@ for (let i = 1; i < rows.length; i++) {
             GradesEarned.push(Earned);
             GradesTotal.push(Total);
         }
+
     }
 }
+console.log("4");
 ///creates a sum of earned and total grades
 FinalGradeEarned = 0;
 FinalGradeTotal = 0;
@@ -46,27 +50,38 @@ for (let k = 0; k < GradesEarned.length; k++) {
     FinalGradeEarned += GradesEarned[k];
     FinalGradeTotal += GradesTotal[k];
 }
+
+console.log(FinalGradeEarned, FinalGradeTotal);
+
+
+if (FinalGradeEarned === 0 && FinalGradeTotal === 0) {
+    shouldAbort = true;
+    console.log("aborted");;
+}
 ///Gets average weighted
 FinalGrade = 0;
 FinalGrade = ((FinalGradeEarned / FinalGradeTotal)*100);
 cachedtitle = cleantitle;
 cachedGrade = FinalGrade;
 ///pushes values and formates of course and title to be visualized later
-chrome.storage.local.get(["courses"], (results) => {
-  const courses = results.courses || {};
+if (!shouldAbort && typeof chrome !== "undefined" && chrome.storage?.local) {
+    console.log("run anyway");
+    chrome.storage.local.get(["courses"], (results) => {
+    const courses = results.courses || {};
+    console.log("x");
+    courses[cachedtitle] = {
+    grade: cachedGrade,
+    savedAt: Date.now()
+    };
 
-  courses[cachedtitle] = {
-  grade: cachedGrade,
-  savedAt: Date.now()
-  };
+    chrome.storage.local.set({ courses });
+    });
 
-  chrome.storage.local.set({ courses });
-});
-
-///sends message to popup.js
-chrome.runtime.onMessage.addListener((msg, _, sendResponse) => {
-  if (msg.type === "GetCourseData") {
-    sendResponse({ title: cachedtitle,
-                   grade: cachedGrade});
-  }
-});
+    ///sends message to popup.js
+    chrome.runtime.onMessage.addListener((msg, _, sendResponse) => {
+    if (msg.type === "GetCourseData") {
+        sendResponse({ title: cachedtitle,
+                    grade: cachedGrade});
+    }
+    });
+}
