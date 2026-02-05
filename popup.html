@@ -3,16 +3,95 @@
   <head>
     <style>
       body {
+        background: #e8f0fc;
         font-family: sans-serif;
         width: 220px;
-        height: 440px;
+        max-height: 1000px;
+        margin-bottom: 10px;
         padding: 1px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+
+      .Header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6px;
+      }
+
+      .Header-row h3 {
+        margin: 0;
+      }
+
+      .toggle {
+        display: flex;
+        align-items: center;
+        gap: 4px ;
+        position:relative;
+      }
+
+      .toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .toggle .onoff {
+        pointer-events: none;
+        color: #000000;
+        font-size: 10px;
+        display: block;
+      }
+
+      .slider {
+        position: relative;
+        display: inline-block;
+        width: 34px;
+        height: 20px;
+        cursor: pointer;
+        background-color: #d20c0c;
+        transition: .4s;
+        border-radius: 20px;
+      }
+
+      .slider::before {
+        content: "";
+        position: absolute;
+        height: 16px;
+        width: 16px; 
+        margin-left: 2px;
+        margin-top: 2px;
+        background-color: #e8f0fc;
+        transition: .4s;
+        border-radius: 50%;
+      }
+
+      .toggle input:checked + .slider::before {
+        transform: translateX(14px);
+      }
+
+      .toggle input:checked + .slider {
+        background-color: green;
       }
 
       h3 {
-      font-size: 20px;
-      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-      }
+          color: rgb(14, 81, 122);
+          font-size: 20px;
+          font-weight: 600;
+          font-family:
+            system-ui,
+            -apple-system,
+            "Segoe UI",
+            Ubuntu,
+            Cantarell,
+            "Noto Sans",
+            Roboto,
+            Arial,
+            sans-serif;
+        }
+
 
       .course-row {
         margin-bottom: 12px;
@@ -42,16 +121,39 @@
         fill: rgb(91, 124, 144);
       }
       
-
       .course-delete:hover svg {
         fill: #d20c0c;
         opacity: 1;
       }
 
+      .course-box {
+        width: 120px;
+      }
+
+      .course-target {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .course-reminder {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
     </style>
-  <head>
+  </head>
 <body>
-  <h3>BrightView</h3>
+  <div class="Header-row">
+    <h3>BrightView</h3>
+    <label class="toggle">
+      <span class="onoff">BASIC</span>
+      <input type ="checkbox" id="grade-toggle"/>
+      <span class="slider round"></span>
+
+    </label>
+
+
+  </div>
   <div id="courses"></div>
   <script src="popup.js"></script>
 </body>

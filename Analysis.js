@@ -2,6 +2,7 @@
 shouldAbort = false;
 let cachedGrade = null;
 let cachedtitle = null;
+let cachedWeight = null;
 ///gets the title
 const uncleantitle = document.getElementsByClassName("d2l-navigation-s-title-container")[0].textContent;
 cleantitle = uncleantitle.split(" ")[0];
@@ -49,10 +50,8 @@ FinalGradeTotal = 0;
 for (let k = 0; k < GradesEarned.length; k++) {
     FinalGradeEarned += GradesEarned[k];
     FinalGradeTotal += GradesTotal[k];
+    console.log(FinalGradeTotal);
 }
-
-console.log(FinalGradeEarned, FinalGradeTotal);
-
 
 if (FinalGradeEarned === 0 && FinalGradeTotal === 0) {
     shouldAbort = true;
@@ -63,15 +62,21 @@ FinalGrade = 0;
 FinalGrade = ((FinalGradeEarned / FinalGradeTotal)*100);
 cachedtitle = cleantitle;
 cachedGrade = FinalGrade;
+cachedWeight = FinalGradeTotal;
+
+if (!Number.isFinite(FinalGradeTotal)) {
+  shouldAbort = true;
+}
+
 ///pushes values and formates of course and title to be visualized later
 if (!shouldAbort && typeof chrome !== "undefined" && chrome.storage?.local) {
-    console.log("run anyway");
     chrome.storage.local.get(["courses"], (results) => {
-    const courses = results.courses || {};
-    console.log("x");
-    courses[cachedtitle] = {
-    grade: cachedGrade,
-    savedAt: Date.now()
+        const courses = results.courses || {};
+        courses[cachedtitle] = {
+            grade: cachedGrade,
+            weight: cachedWeight,
+            target: 55,
+            savedAt: Date.now()
     };
 
     chrome.storage.local.set({ courses });
@@ -79,9 +84,14 @@ if (!shouldAbort && typeof chrome !== "undefined" && chrome.storage?.local) {
 
     ///sends message to popup.js
     chrome.runtime.onMessage.addListener((msg, _, sendResponse) => {
-    if (msg.type === "GetCourseData") {
-        sendResponse({ title: cachedtitle,
-                    grade: cachedGrade});
-    }
+
+        if (msg.type === "GetCourseData") {
+
+            sendResponse({ title: cachedtitle,
+                            grade: cachedGrade,
+                            weight: cachedWeight,
+                            target: 55});
+
+        }
     });
 }
